@@ -7,8 +7,23 @@ pipeline {
   }
   stages {
     stage('scm') {
-      steps {
-        git(url: 'https://github.com/manuravipati/maven-repo.git', branch: 'master', credentialsId: 'git-token')
+      parallel {
+        stage('scm') {
+          steps {
+            git(url: 'https://github.com/manuravipati/maven-repo.git', branch: 'master', credentialsId: 'git-token')
+          }
+        }
+
+        stage('Q/A') {
+          steps {
+            withSonarQubeEnv(credentialsId: 'sonar', installationName: 'SonarQube') {
+              sh '''/usr/share/maven/bin mvn sonar:sonar
+'''
+            }
+
+          }
+        }
+
       }
     }
 
@@ -23,7 +38,7 @@ pipeline {
         stage('QA') {
           steps {
             withSonarQubeEnv(installationName: 'sonar Qube', credentialsId: 'sonarToken') {
-              sh '/usr/share/maven/bin/mvn sonar:sonar'
+              sh '/usr/share/maven/bin/ mvn sonar:sonar'
             }
 
           }
