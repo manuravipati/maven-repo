@@ -16,7 +16,7 @@ pipeline {
       parallel {
         stage('build') {
           steps {
-            sh '/usr/share/maven/bin/mvn package'
+            sh '/usr/share/maven/bin/ mvn package'
           }
         }
 
